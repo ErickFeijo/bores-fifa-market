@@ -1,0 +1,5 @@
+{
+  "name": "FIFA Player Market Value Calculator",
+  "description": "An app to calculate a FIFA player's market value based on configurable stat weights.",
+  "requestFramePermissions": []
+}
