@@ -16,12 +16,12 @@ concurrency:
 
 env:
   NODE_VERSION: 20
-  # base path pro GitHub Pages (ex.: /usuario/repo/)
   BASE_PATH: /${{ github.event.repository.name }}/
 
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -30,19 +30,18 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
+          # REMOVIDO: cache: 'npm' (requer lockfile)
 
       - name: Install deps
-        run: npm ci
+        run: npm install
 
       - name: Build
-        run: npm run build
-
-      # SPA fallback: copia index.html para 404.html
-      # evitando 404 em rotas client-side no Pages
-      - name: Create 404.html for SPA fallback
         run: |
-          cp dist/index.html dist/404.html
+          echo "VITE_BASE_PATH=${BASE_PATH}" >> .env
+          npm run build
+
+      - name: SPA fallback (404.html)
+        run: cp dist/index.html dist/404.html
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
